@@ -64,7 +64,7 @@ A comprehensive cinema management web application built with Next.js, MongoDB, a
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/yourusername/theater-my-life.git
+   git clone https://github.com/delvintrung/manage_movie_theater.git
    cd theater-my-life
    ```
 
@@ -176,12 +176,6 @@ theater-my-life/
 - WebSocket integration for real-time updates
 
 ## 🔧 Configuration
-
-### Stripe Setup
-1. Create a Stripe account at [stripe.com](https://stripe.com)
-2. Get your API keys from the Stripe dashboard
-3. Add the keys to your `.env.local` file
-4. Set up webhooks for payment confirmation
 
 ### OAuth Setup (Optional)
 1. **Google OAuth**:
