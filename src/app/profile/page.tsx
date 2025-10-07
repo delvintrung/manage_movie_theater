@@ -24,31 +24,9 @@ import {
   Crown
 } from 'lucide-react';
 import { toast } from 'sonner';
+import { UserProfile, Booking } from '@/lib/types';
 
-interface UserProfile {
-  id: string;
-  name: string;
-  email: string;
-  phone?: string;
-  dateOfBirth?: string;
-  gender?: string;
-  avatar?: string;
-  role: string;
-  loyaltyPoints: number;
-  joinDate: string;
-}
 
-interface Booking {
-  id: string;
-  movie: string;
-  theater: string;
-  date: string;
-  time: string;
-  seats: string[];
-  amount: number;
-  status: string;
-  bookingReference: string;
-}
 
 export default function ProfilePage() {
   const { data: session, status } = useSession();
@@ -101,6 +79,11 @@ export default function ProfilePage() {
       bookingReference: 'TML002'
     }
   ];
+    const fetchProfile = async () => {
+        const res = await fetch(`/api/users/${session?.user?.id}`);
+        const data = await res.json();
+        setProfile(data.user);
+    }
 
   useEffect(() => {
     if (status === 'loading') return;
@@ -110,17 +93,9 @@ export default function ProfilePage() {
       return;
     }
 
-    // Simulate API call
-    setTimeout(() => {
-      setProfile(sampleProfile);
-      setBookings(sampleBookings);
-      setFormData({
-        name: sampleProfile.name,
-        phone: sampleProfile.phone || '',
-        dateOfBirth: sampleProfile.dateOfBirth || '',
-        gender: sampleProfile.gender || ''
-      });
-    }, 1000);
+      fetchProfile()
+
+
   }, [session, status, router]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

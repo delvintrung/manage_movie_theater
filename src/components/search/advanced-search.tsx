@@ -9,6 +9,7 @@ import { Badge } from '@/components/ui/badge';
 import { Search, Filter, X, Star, Clock, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
 
+
 interface SearchFilters {
   query: string;
   genre: string;

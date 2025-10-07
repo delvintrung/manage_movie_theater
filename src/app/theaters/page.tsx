@@ -5,111 +5,65 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { MapPin, Phone, Mail, Clock, Wifi, Car, Utensils, Accessibility } from 'lucide-react';
+import { Theater } from '@/lib/types';
 
-interface Theater {
-  id: string;
-  name: string;
-  location: {
-    address: string;
-    city: string;
-    state: string;
-    zipCode: string;
-    coordinates: {
-      lat: number;
-      lng: number;
-    };
-  };
-  contact: {
-    phone: string;
-    email: string;
-  };
-  facilities: string[];
-  isActive: boolean;
-}
+
 
 export default function TheatersPage() {
   const [theaters, setTheaters] = useState<Theater[]>([]);
   const [loading, setLoading] = useState(true);
+    const [locationLink, setLocationLink] = useState([
+        {
+            name: "Downtown",
+            link: "https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1862.7975387496751!2d106.669533!3d10.770647!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x31752edde029b133%3A0x97e90e1306ccf98e!2zQ0dWIFPGsCBW4bqhbiBI4bqhbmg!5e1!3m2!1svi!2sus!4v1759722404981!5m2!1svi!2sus"},
+        {
+            name: "Mall",
+            link: 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3724.8948025013547!2d106.689282!3d10.827114!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x317528f9600a6f3d%3A0x6b75d60918c5fc05!2zQ0dWIFZpbmNvbSBQaGFuIFbEg24gVHLhu4s!5e1!3m2!1svi!2sus!4v1759722978005!5m2!1svi!2sus'
+        }]);
+  const [directionMap, setDirectionMap] = useState<string | null>(null)
 
-  // Sample data - in real app, this would come from API
-  const sampleTheaters: Theater[] = [
-    {
-      id: '1',
-      name: 'Downtown Theater',
-      location: {
-        address: '123 Cinema Street',
-        city: 'Movie City',
-        state: 'MC',
-        zipCode: '12345',
-        coordinates: { lat: 40.7128, lng: -74.0060 }
-      },
-      contact: {
-        phone: '+1 (555) 123-4567',
-        email: 'downtown@theatermylife.com'
-      },
-      facilities: ['IMAX', '4DX', 'Dolby Atmos', 'Premium Seating', 'Free WiFi', 'Parking', 'Food Court', 'Wheelchair Accessible'],
-      isActive: true
-    },
-    {
-      id: '2',
-      name: 'Mall Theater',
-      location: {
-        address: '456 Shopping Center',
-        city: 'Mall City',
-        state: 'MC',
-        zipCode: '12346',
-        coordinates: { lat: 40.7589, lng: -73.9851 }
-      },
-      contact: {
-        phone: '+1 (555) 234-5678',
-        email: 'mall@theatermylife.com'
-      },
-      facilities: ['3D', 'Premium Seating', 'Food Court', 'Free WiFi', 'Parking', 'Wheelchair Accessible'],
-      isActive: true
-    },
-    {
-      id: '3',
-      name: 'City Center Theater',
-      location: {
-        address: '789 Entertainment District',
-        city: 'City Center',
-        state: 'CC',
-        zipCode: '12347',
-        coordinates: { lat: 40.7505, lng: -73.9934 }
-      },
-      contact: {
-        phone: '+1 (555) 345-6789',
-        email: 'citycenter@theatermylife.com'
-      },
-      facilities: ['IMAX', '3D', 'Premium Seating', 'Dolby Atmos', 'Free WiFi', 'Valet Parking', 'Restaurant', 'Wheelchair Accessible'],
-      isActive: true
-    },
-    {
-      id: '4',
-      name: 'Suburb Theater',
-      location: {
-        address: '321 Family Plaza',
-        city: 'Suburb Town',
-        state: 'ST',
-        zipCode: '12348',
-        coordinates: { lat: 40.6892, lng: -74.0445 }
-      },
-      contact: {
-        phone: '+1 (555) 456-7890',
-        email: 'suburb@theatermylife.com'
-      },
-      facilities: ['2D', '3D', 'Premium Seating', 'Free WiFi', 'Free Parking', 'Food Court', 'Wheelchair Accessible'],
-      isActive: true
+    const fetchTheaters = async () => {
+        try {
+            setLoading(true);
+            const response = await fetch('/api/theaters');
+            if (!response.ok) {
+                throw new Error('Failed to fetch theaters');
+            }
+            const data: Theater[] = await response.json();
+            setTheaters(data);
+        } catch (error) {
+            console.error('Error fetching theaters:', error);
+        } finally {
+            setLoading(false);
+        }
     }
-  ];
+
+    const loadDirectionMap = (id: number) => {
+        console.log(id)
+        switch(id) {
+            case 0:
+                console.log(locationLink[0].link!)
+                setDirectionMap(locationLink[0].link!);
+                break;
+            case 1:
+                setDirectionMap(locationLink[1].link!);
+                break;
+            default:
+                setDirectionMap(null);
+                break;
+        }
+    }
+
+
+
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setTheaters(sampleTheaters);
-      setLoading(false);
-    }, 1000);
+      fetchTheaters();
   }, []);
+
+    useEffect(() => {
+
+    }, [directionMap]);
 
   const getFacilityIcon = (facility: string) => {
     switch (facility.toLowerCase()) {
@@ -160,8 +114,8 @@ export default function TheatersPage() {
 
         {/* Theaters Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          {theaters.map((theater) => (
-            <Card key={theater.id} className="bg-gray-900 border-gray-800 overflow-hidden hover:scale-105 transition-transform duration-300">
+          {theaters.map((theater, index) => (
+            <Card key={theater._id} className="bg-gray-900 border-gray-800 overflow-hidden hover:scale-105 transition-transform duration-300">
               <CardHeader>
                 <div className="flex items-start justify-between">
                   <div>
@@ -216,7 +170,7 @@ export default function TheatersPage() {
                   <Button className="flex-1 bg-yellow-500 hover:bg-yellow-600 text-black font-semibold">
                     View Showtimes
                   </Button>
-                  <Button variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-800">
+                  <Button variant="outline" className="border-gray-700 text-gray-300 hover:bg-gray-800" onClick={() => loadDirectionMap(index)}>
                     Get Directions
                   </Button>
                 </div>
@@ -233,13 +187,16 @@ export default function TheatersPage() {
             </CardHeader>
             <CardContent>
               <div className="bg-gray-800 rounded-lg h-96 flex items-center justify-center">
-                <div className="text-center">
+                <div className="text-center">{
+                    directionMap == null ? <div>
+
                   <MapPin className="h-16 w-16 text-gray-400 mx-auto mb-4" />
                   <p className="text-gray-400 text-lg">Interactive map coming soon</p>
                   <p className="text-gray-500 text-sm mt-2">
-                    Use the "Get Directions" button on each theater card for now
-                  </p>
-                </div>
+                    Use the &#34;Get Directions&#34; button on each theater card for now
+                  </p> </div>:
+                    <iframe src={directionMap} className="w-[1150px] h-96"   loading="lazy" ></iframe>
+                  }</div>
               </div>
             </CardContent>
           </Card>

@@ -1,4 +1,7 @@
 import mongoose, { Document, Schema } from 'mongoose';
+import './Theater';
+import './Movie';
+import './Screen';
 
 export interface IShowtime extends Document {
   movie: mongoose.Types.ObjectId;

@@ -35,14 +35,14 @@ const UserSchema = new Schema<IUser>({
   },
   password: {
     type: String,
-    required: function() {
-      return !this.googleId && !this.facebookId;
-    },
+    // required: function() {
+    //   return !this.googleId && !this.facebookId;
+    // },
     minlength: [6, 'Password must be at least 6 characters']
   },
   phone: {
     type: String,
-    match: [/^[\+]?[1-9][\d]{0,15}$/, 'Please enter a valid phone number']
+    match: [/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'Please enter a valid phone number']
   },
   dateOfBirth: {
     type: Date

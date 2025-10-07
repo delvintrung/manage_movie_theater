@@ -199,7 +199,7 @@ export function MovieReviews({ movieId, movieTitle }: MovieReviewsProps) {
             {/* Overall Rating */}
             <div className="text-center">
               <div className="text-4xl font-bold text-white mb-2">{getAverageRating()}</div>
-              <div className="mb-2">{renderStars(Math.round(parseFloat(getAverageRating())))}</div>
+              <div className="mb-2">{renderStars(Math.round(parseFloat(getAverageRating() as string)))}</div>
               <p className="text-gray-400 text-sm">Based on {reviews.length} reviews</p>
             </div>
 

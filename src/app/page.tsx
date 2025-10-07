@@ -5,7 +5,8 @@ import { PromotionalBanner } from '@/components/home/promotional-banner';
 import { QuickSearch } from '@/components/home/quick-search';
 import { Footer } from '@/components/footer';
 
-export default function Home() {
+export default  function Home() {
+
   return (
     <div className="min-h-screen bg-black text-white">
       <Navigation />
