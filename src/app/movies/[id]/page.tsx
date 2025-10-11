@@ -70,7 +70,7 @@ export default function MovieDetailPage() {
     );
   }
 
-  if (!movie && !isLoading) {
+  if (!movie) {
     return (
       <div className="min-h-screen bg-black flex items-center justify-center">
         <div className="text-white text-xl">Movie not found</div>

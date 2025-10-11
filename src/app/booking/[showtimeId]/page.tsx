@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -10,16 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { SeatMap } from '@/components/booking/seat-map';
 import { ArrowLeft, CreditCard, Popcorn, Clock, MapPin } from 'lucide-react';
 import { toast } from 'sonner';
-
-interface Seat {
-  id: string;
-  row: string;
-  number: number;
-  type: 'regular' | 'premium' | 'vip' | 'wheelchair';
-  price: number;
-  isAvailable: boolean;
-  isSelected: boolean;
-}
+import {IShowtimeDetail, Seat} from '@/lib/types';
+import GlobalLoading from "@/components/context/GlobalLoading";
 
 export default function BookingPage() {
   const params = useParams();
@@ -28,28 +20,25 @@ export default function BookingPage() {
   const [promoCode, setPromoCode] = useState('');
   const [discount, setDiscount] = useState(0);
   const [isProcessing, setIsProcessing] = useState(false);
+    const [isLoading, setIsLoading] = useState<boolean>(false)
+    const [showtimeDetail, setShowtimeDetail] = useState<IShowtimeDetail | null>(null)
 
-  // Sample showtime data - in real app, this would come from API
-  const showtimeData = {
-    id: params.showtimeId,
-    movie: {
-      title: "Avatar: The Way of Water",
-      poster: "https://images.unsplash.com/photo-1489599809510-7b0b3b0b3b0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-      duration: 192,
-      ageRating: "PG-13"
-    },
-    theater: {
-      name: "Downtown Theater",
-      location: "123 Cinema Street, Movie City"
-    },
-    screen: {
-      name: "Screen 1",
-      type: "IMAX"
-    },
-    date: "2024-01-20",
-    time: "19:30",
-    endTime: "22:42"
-  };
+
+  const fetchShowtimeDetail = async () => {
+      try {
+          setIsLoading(true);
+          const res = await fetch("/api/showtimes/" + params.showtimeId);
+          const data = await res.json();
+          setShowtimeDetail(data)
+      }
+      catch (error) {
+          console.log(error);
+      }
+      finally {
+          setIsLoading(false);
+      }
+  }
+
 
   const handleSeatSelection = (seats: Seat[]) => {
     setSelectedSeats(seats);
@@ -102,6 +91,18 @@ export default function BookingPage() {
     }
   };
 
+    useEffect(() => {
+        fetchShowtimeDetail()
+    },[])
+
+    if(isLoading || showtimeDetail == null) {
+        return (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 text-white">
+                <div className="animate-spin rounded-full h-10 w-10 border-t-4 border-white"></div>
+            </div>
+        )
+    }
+
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -130,6 +131,7 @@ export default function BookingPage() {
               </CardHeader>
               <CardContent>
                 <SeatMap
+                    screenId={showtimeDetail?.screen?._id}
                   onSeatSelection={handleSeatSelection}
                   selectedSeats={selectedSeats}
                 />
@@ -147,14 +149,14 @@ export default function BookingPage() {
               <CardContent className="space-y-4">
                 <div className="flex items-center space-x-4">
                   <img
-                    src={showtimeData.movie.poster}
-                    alt={showtimeData.movie.title}
+                    src={showtimeDetail?.movie?.posterImage}
+                    alt={showtimeDetail?.movie?.posterImage}
                     className="w-16 h-20 object-cover rounded"
                   />
                   <div>
-                    <h3 className="font-semibold text-white">{showtimeData.movie.title}</h3>
+                    <h3 className="font-semibold text-white">{showtimeDetail?.movie?.title}</h3>
                     <Badge className="bg-yellow-500 text-black mt-1">
-                      {showtimeData.movie.ageRating}
+                      {showtimeDetail?.movie?.ageRating}
                     </Badge>
                   </div>
                 </div>
@@ -163,18 +165,18 @@ export default function BookingPage() {
                   <div className="flex items-center space-x-2">
                     <Clock className="h-4 w-4 text-gray-400" />
                     <span className="text-gray-300">
-                      {showtimeData.time} - {showtimeData.endTime}
+                      {showtimeDetail?.startTime} - {showtimeDetail?.endTime}
                     </span>
                   </div>
                   <div className="flex items-center space-x-2">
                     <MapPin className="h-4 w-4 text-gray-400" />
-                    <span className="text-gray-300">{showtimeData.theater.name}</span>
+                    <span className="text-gray-300">{showtimeDetail?.theater?.name}</span>
                   </div>
                   <div className="text-gray-300">
-                    {showtimeData.screen.name} • {showtimeData.screen.type}
+                    {showtimeDetail?.screen?.name} • {showtimeDetail?.screen?.screenType}
                   </div>
                   <div className="text-gray-300">
-                    {new Date(showtimeData.date).toLocaleDateString('en-US', {
+                    {new Date(showtimeDetail?.date).toLocaleDateString('en-US', {
                       weekday: 'long',
                       year: 'numeric',
                       month: 'long',
@@ -239,7 +241,7 @@ export default function BookingPage() {
               <CardContent className="space-y-4">
                 <div className="space-y-2">
                   {selectedSeats.map((seat) => (
-                    <div key={seat.id} className="flex justify-between text-sm">
+                    <div key={seat._id} className="flex justify-between text-sm">
                       <span className="text-gray-300">
                         {seat.row}{seat.number} ({seat.type})
                       </span>

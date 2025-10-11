@@ -8,6 +8,7 @@ import {IMovie} from "@/lib/types";
 import Image from "next/image";
 
 const CardMovie = ({props}: { props: IMovie }) => {
+
     return (
         <Card className="bg-gray-900 border-gray-800 overflow-hidden group hover:scale-105 transition-transform duration-300">
             <div className="relative">

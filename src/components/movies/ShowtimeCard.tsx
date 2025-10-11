@@ -8,7 +8,6 @@ const ShowtimeCard = ({showtime}: { showtime: IShowtimeDetail }) => {
     const handleBookNow = (showtimeId: string) => {
         router.push(`/booking/${showtimeId}`);
     };
-    console.log("Show time",showtime);
     return (
         <div key={showtime._id} className="p-4 bg-gray-800 rounded-lg">
             <div className="flex items-center justify-between mb-2">

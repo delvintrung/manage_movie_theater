@@ -133,3 +133,13 @@ export interface IShowtimeDetail {
     isActive: boolean;
     price: Price
 }
+
+export interface Seat {
+    _id: string;
+    row: string;
+    number: number;
+    type: 'regular' | 'premium' | 'vip' | 'wheelchair';
+    price: number;
+    isAvailable?: boolean;
+    isSelected?: boolean;
+}

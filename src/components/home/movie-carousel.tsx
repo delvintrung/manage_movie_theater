@@ -6,17 +6,9 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { ChevronLeft, ChevronRight, Star, Clock, Play } from 'lucide-react';
 import Link from 'next/link';
+import {IMovie} from '@/lib/types';
 
-interface Movie {
-  id: number;
-  title: string;
-  poster: string;
-  rating: number;
-  duration: number;
-  genre: string[];
-  releaseDate: string;
-  status: 'now_showing' | 'upcoming' | 'ended';
-}
+
 
 interface MovieCarouselProps {
   title: string;
@@ -24,67 +16,127 @@ interface MovieCarouselProps {
 }
 
 // Sample data - in real app, this would come from API
-const sampleMovies: Movie[] = [
-  {
-    id: 1,
-    title: "Avatar: The Way of Water",
-    poster: "https://images.unsplash.com/photo-1489599809510-7b0b3b0b3b0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    rating: 8.2,
-    duration: 192,
-    genre: ["Action", "Adventure", "Sci-Fi"],
-    releaseDate: "2024-01-15",
-    status: "now_showing"
-  },
-  {
-    id: 2,
-    title: "Black Panther: Wakanda Forever",
-    poster: "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    rating: 7.8,
-    duration: 161,
-    genre: ["Action", "Adventure", "Drama"],
-    releaseDate: "2024-02-10",
-    status: "now_showing"
-  },
-  {
-    id: 3,
-    title: "Top Gun: Maverick",
-    poster: "https://images.unsplash.com/photo-1574267432553-4b4628081c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    rating: 8.9,
-    duration: 131,
-    genre: ["Action", "Drama"],
-    releaseDate: "2024-03-05",
-    status: "now_showing"
-  },
-  {
-    id: 4,
-    title: "Spider-Man: No Way Home",
-    poster: "https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    rating: 8.4,
-    duration: 148,
-    genre: ["Action", "Adventure", "Fantasy"],
-    releaseDate: "2024-04-20",
-    status: "upcoming"
-  },
-  {
-    id: 5,
-    title: "The Batman",
-    poster: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    rating: 7.8,
-    duration: 176,
-    genre: ["Action", "Crime", "Drama"],
-    releaseDate: "2024-05-15",
-    status: "upcoming"
-  },
-  {
-    id: 6,
-    title: "Doctor Strange in the Multiverse of Madness",
-    poster: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-    rating: 6.9,
-    duration: 126,
-    genre: ["Action", "Adventure", "Fantasy"],
-    releaseDate: "2024-06-10",
-    status: "upcoming"
-  }
+const sampleMovies: IMovie[] = [
+    {
+        _id: "1",
+        title: "Avatar: The Way of Water",
+        posterImage: "https://images.unsplash.com/photo-1489599809510-7b0b3b0b3b0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        rating: 8.2,
+        duration: 192,
+        genre: ["Action", "Adventure", "Sci-Fi"],
+        releaseDate: "2024-01-15",
+        status: "now_showing",
+        description: "",
+        endDate: "",
+        director: "",
+        cast: [],
+        trailerUrl: "",
+        backdropImage: "",
+        ageRating: "",
+        isActive: false,
+        language: "",
+        subtitles: []
+    },
+    {
+        _id: "2",
+        title: "Black Panther: Wakanda Forever",
+        posterImage: "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        rating: 7.8,
+        duration: 161,
+        genre: ["Action", "Adventure", "Drama"],
+        releaseDate: "2024-02-10",
+        status: "now_showing",
+        description: "",
+        endDate: "",
+        director: "",
+        cast: [],
+        trailerUrl: "",
+        backdropImage: "",
+        ageRating: "",
+        isActive: false,
+        language: "",
+        subtitles: []
+    },
+    {
+        _id: "3",
+        title: "Top Gun: Maverick",
+        posterImage: "https://images.unsplash.com/photo-1574267432553-4b4628081c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        rating: 8.9,
+        duration: 131,
+        genre: ["Action", "Drama"],
+        releaseDate: "2024-03-05",
+        status: "now_showing",
+        description: "",
+        endDate: "",
+        director: "",
+        cast: [],
+        trailerUrl: "",
+        backdropImage: "",
+        ageRating: "",
+        isActive: false,
+        language: "",
+        subtitles: []
+    },
+    {
+        _id: "4",
+        title: "Spider-Man: No Way Home",
+        posterImage: "https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        rating: 8.4,
+        duration: 148,
+        genre: ["Action", "Adventure", "Fantasy"],
+        releaseDate: "2024-04-20",
+        status: "upcoming",
+        description: "",
+        endDate: "",
+        director: "",
+        cast: [],
+        trailerUrl: "",
+        backdropImage: "",
+        ageRating: "",
+        isActive: false,
+        language: "",
+        subtitles: []
+    },
+    {
+        _id: "5",
+        title: "The Batman",
+        posterImage: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        rating: 7.8,
+        duration: 176,
+        genre: ["Action", "Crime", "Drama"],
+        releaseDate: "2024-05-15",
+        status: "upcoming",
+        description: "",
+        endDate: "",
+        director: "",
+        cast: [],
+        trailerUrl: "",
+        backdropImage: "",
+        ageRating: "",
+        isActive: false,
+        language: "",
+        subtitles: []
+    },
+    {
+        _id: "6",
+        title: "Doctor Strange in the Multiverse of Madness",
+        posterImage: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
+        rating: 6.9,
+        duration: 126,
+        genre: ["Action", "Adventure", "Fantasy"],
+        releaseDate: "2024-06-10",
+        status: "upcoming",
+        description: "",
+        endDate: "",
+        director: "",
+        cast: [],
+        trailerUrl: "",
+        backdropImage: "",
+        ageRating: "",
+        isActive: false,
+        language: "",
+        subtitles: []
+    }
 ];
 
 export function MovieCarousel({ title, status }: MovieCarouselProps) {
@@ -139,11 +191,11 @@ export function MovieCarousel({ title, status }: MovieCarouselProps) {
             style={{ transform: `translateX(-${currentIndex * (100 / itemsPerView)}%)` }}
           >
             {movies.map((movie) => (
-              <div key={movie.id} className="w-full flex-shrink-0 px-2" style={{ width: `${100 / itemsPerView}%` }}>
+              <div key={movie._id} className="w-full flex-shrink-0 px-2" style={{ width: `${100 / itemsPerView}%` }}>
                 <Card className="bg-gray-900 border-gray-800 overflow-hidden group hover:scale-105 transition-transform duration-300">
                   <div className="relative">
                     <img
-                      src={movie.poster}
+                      src={movie.posterImage}
                       alt={movie.title}
                       className="w-full h-80 object-cover"
                     />
@@ -177,7 +229,7 @@ export function MovieCarousel({ title, status }: MovieCarouselProps) {
                       ))}
                     </div>
                     <Button asChild className="w-full bg-yellow-500 hover:bg-yellow-600 text-black">
-                      <Link href={`/movies/${movie.id}`}>
+                      <Link href={`/movies/${movie._id}`}>
                         {status === 'now_showing' ? 'Book Now' : 'View Details'}
                       </Link>
                     </Button>

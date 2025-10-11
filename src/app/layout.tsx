@@ -4,6 +4,8 @@ import "./globals.css";
 import { Providers } from "@/components/providers";
 import { Toaster } from "@/components/ui/sonner";
 import { ChatWidget } from "@/components/chat/chat-widget";
+import RouteChangeHandler from "@/components/RouteChangeHandle";
+import LoadingOverlay from "@/components/loadingOverlay";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -29,6 +31,8 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <Providers>
+            <RouteChangeHandler />
+            <LoadingOverlay />
           {children}
           <Toaster />
           <ChatWidget />
