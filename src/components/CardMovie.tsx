@@ -8,16 +8,17 @@ import {IMovie} from "@/lib/types";
 import Image from "next/image";
 
 const CardMovie = ({props}: { props: IMovie }) => {
-
+    console.log(props.posterImage);
     return (
         <Card className="bg-gray-900 border-gray-800 overflow-hidden group hover:scale-105 transition-transform duration-300">
             <div className="relative">
                 <Image
-                    width={0}
-                    height={0}
+                    width={1000}
+                    height={320}
                     src={props.posterImage}
                     alt={props.title}
-                    className="w-full h-80 object-cover"
+                    className="object-cover"
+                    priority={true}
                 />
                 <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
                     <Link href={props.trailerUrl} target="_blank"><Button size="sm" className="bg-yellow-500 hover:bg-yellow-600 text-black">

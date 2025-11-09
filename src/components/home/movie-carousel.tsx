@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -15,133 +15,9 @@ interface MovieCarouselProps {
   status: 'now_showing' | 'upcoming' | 'ended';
 }
 
-// Sample data - in real app, this would come from API
-const sampleMovies: IMovie[] = [
-    {
-        _id: "1",
-        title: "Avatar: The Way of Water",
-        posterImage: "https://images.unsplash.com/photo-1489599809510-7b0b3b0b3b0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-        rating: 8.2,
-        duration: 192,
-        genre: ["Action", "Adventure", "Sci-Fi"],
-        releaseDate: "2024-01-15",
-        status: "now_showing",
-        description: "",
-        endDate: "",
-        director: "",
-        cast: [],
-        trailerUrl: "",
-        backdropImage: "",
-        ageRating: "",
-        isActive: false,
-        language: "",
-        subtitles: []
-    },
-    {
-        _id: "2",
-        title: "Black Panther: Wakanda Forever",
-        posterImage: "https://images.unsplash.com/photo-1518676590629-3dcbd9c5a5c9?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-        rating: 7.8,
-        duration: 161,
-        genre: ["Action", "Adventure", "Drama"],
-        releaseDate: "2024-02-10",
-        status: "now_showing",
-        description: "",
-        endDate: "",
-        director: "",
-        cast: [],
-        trailerUrl: "",
-        backdropImage: "",
-        ageRating: "",
-        isActive: false,
-        language: "",
-        subtitles: []
-    },
-    {
-        _id: "3",
-        title: "Top Gun: Maverick",
-        posterImage: "https://images.unsplash.com/photo-1574267432553-4b4628081c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-        rating: 8.9,
-        duration: 131,
-        genre: ["Action", "Drama"],
-        releaseDate: "2024-03-05",
-        status: "now_showing",
-        description: "",
-        endDate: "",
-        director: "",
-        cast: [],
-        trailerUrl: "",
-        backdropImage: "",
-        ageRating: "",
-        isActive: false,
-        language: "",
-        subtitles: []
-    },
-    {
-        _id: "4",
-        title: "Spider-Man: No Way Home",
-        posterImage: "https://images.unsplash.com/photo-1635805737707-575885ab0820?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-        rating: 8.4,
-        duration: 148,
-        genre: ["Action", "Adventure", "Fantasy"],
-        releaseDate: "2024-04-20",
-        status: "upcoming",
-        description: "",
-        endDate: "",
-        director: "",
-        cast: [],
-        trailerUrl: "",
-        backdropImage: "",
-        ageRating: "",
-        isActive: false,
-        language: "",
-        subtitles: []
-    },
-    {
-        _id: "5",
-        title: "The Batman",
-        posterImage: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-        rating: 7.8,
-        duration: 176,
-        genre: ["Action", "Crime", "Drama"],
-        releaseDate: "2024-05-15",
-        status: "upcoming",
-        description: "",
-        endDate: "",
-        director: "",
-        cast: [],
-        trailerUrl: "",
-        backdropImage: "",
-        ageRating: "",
-        isActive: false,
-        language: "",
-        subtitles: []
-    },
-    {
-        _id: "6",
-        title: "Doctor Strange in the Multiverse of Madness",
-        posterImage: "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80",
-        rating: 6.9,
-        duration: 126,
-        genre: ["Action", "Adventure", "Fantasy"],
-        releaseDate: "2024-06-10",
-        status: "upcoming",
-        description: "",
-        endDate: "",
-        director: "",
-        cast: [],
-        trailerUrl: "",
-        backdropImage: "",
-        ageRating: "",
-        isActive: false,
-        language: "",
-        subtitles: []
-    }
-];
-
 export function MovieCarousel({ title, status }: MovieCarouselProps) {
+    const [movies, setMovies] = useState<IMovie[]>([])
   const [currentIndex, setCurrentIndex] = useState(0);
-  const movies = sampleMovies.filter(movie => movie.status === status);
   const itemsPerView = 4;
 
   const nextSlide = () => {
@@ -155,6 +31,21 @@ export function MovieCarousel({ title, status }: MovieCarouselProps) {
       prev === 0 ? Math.max(0, movies.length - itemsPerView) : prev - 1
     );
   };
+
+  const fetchMovies = async () => {
+      try {
+          const response = await fetch(`/api/movies?status=${status}&limit=20`);
+            const data = await response.json();
+            setMovies(data.movies);
+      }
+        catch (error) {
+            console.log('Error fetching movies:', error);
+        }
+  }
+
+  useEffect(() => {
+      fetchMovies()
+  },[])
 
   if (movies.length === 0) return null;
 

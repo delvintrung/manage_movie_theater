@@ -10,7 +10,7 @@ import { Plus, Minus, ShoppingCart, Heart, Star, Clock, Leaf } from 'lucide-reac
 import { toast } from 'sonner';
 
 interface FoodItem {
-  id: string;
+  _id: string;
   name: string;
   description: string;
   category: 'popcorn' | 'drinks' | 'snacks' | 'combo';
@@ -41,126 +41,38 @@ interface CartItem {
 export default function FoodPage() {
   const [foodItems, setFoodItems] = useState<FoodItem[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [favorites, setFavorites] = useState<string[]>([]);
 
-  // Sample data - in real app, this would come from API
-  const sampleFoodItems: FoodItem[] = [
-    {
-      id: '1',
-      name: 'Large Popcorn',
-      description: 'Freshly popped buttery popcorn with real butter',
-      category: 'popcorn',
-      price: 8.99,
-      image: 'https://images.unsplash.com/photo-1574267432553-4b4628081c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
-      stock: 100,
-      allergens: ['Dairy'],
-      nutritionInfo: { calories: 400, fat: 25, protein: 5, carbs: 40 },
-      isVegetarian: true
-    },
-    {
-      id: '2',
-      name: 'Medium Popcorn',
-      description: 'Perfect size popcorn for sharing',
-      category: 'popcorn',
-      price: 6.99,
-      image: 'https://images.unsplash.com/photo-1574267432553-4b4628081c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
-      stock: 150,
-      allergens: ['Dairy'],
-      nutritionInfo: { calories: 300, fat: 18, protein: 4, carbs: 30 },
-      isVegetarian: true
-    },
-    {
-      id: '3',
-      name: 'Coca Cola',
-      description: 'Refreshing Coca Cola soft drink',
-      category: 'drinks',
-      price: 4.99,
-      image: 'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
-      stock: 200,
-      allergens: [],
-      nutritionInfo: { calories: 140, fat: 0, protein: 0, carbs: 35 }
-    },
-    {
-      id: '4',
-      name: 'Pepsi',
-      description: 'Classic Pepsi cola drink',
-      category: 'drinks',
-      price: 4.99,
-      image: 'https://images.unsplash.com/photo-1581636625402-29b2a704ef13?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
-      stock: 180,
-      allergens: [],
-      nutritionInfo: { calories: 140, fat: 0, protein: 0, carbs: 35 }
-    },
-    {
-      id: '5',
-      name: 'Nachos Supreme',
-      description: 'Loaded nachos with cheese, jalapeños, and sour cream',
-      category: 'snacks',
-      price: 12.99,
-      image: 'https://images.unsplash.com/photo-1513456852971-30c0b8199d4d?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
-      stock: 50,
-      allergens: ['Dairy', 'Gluten'],
-      nutritionInfo: { calories: 650, fat: 35, protein: 15, carbs: 70 },
-      isVegetarian: true
-    },
-    {
-      id: '6',
-      name: 'Chicken Wings',
-      description: 'Crispy buffalo chicken wings with ranch dip',
-      category: 'snacks',
-      price: 14.99,
-      image: 'https://images.unsplash.com/photo-1567620832904-9fe5cf23db13?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
-      stock: 30,
-      allergens: ['Dairy'],
-      nutritionInfo: { calories: 800, fat: 45, protein: 35, carbs: 20 }
-    },
-    {
-      id: '7',
-      name: 'Movie Combo',
-      description: 'Large popcorn + Large drink + Candy',
-      category: 'combo',
-      price: 18.99,
-      image: 'https://images.unsplash.com/photo-1574267432553-4b4628081c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
-      stock: 75,
-      allergens: ['Dairy'],
-      nutritionInfo: { calories: 800, fat: 30, protein: 8, carbs: 120 },
-      isVegetarian: true
-    },
-    {
-      id: '8',
-      name: 'Family Combo',
-      description: '2 Large popcorns + 4 Drinks + 2 Candies',
-      category: 'combo',
-      price: 32.99,
-      image: 'https://images.unsplash.com/photo-1574267432553-4b4628081c31?ixlib=rb-4.0.3&auto=format&fit=crop&w=300&q=80',
-      stock: 40,
-      allergens: ['Dairy'],
-      nutritionInfo: { calories: 1600, fat: 60, protein: 16, carbs: 240 },
-      isVegetarian: true
+  const fetchFoodItems = async () => {
+    try {
+        setLoading(true);
+        const response = await fetch('/api/foods');
+        const data = await response.json();
+        setFoodItems(data.foods);
+    } catch (error) {
+        console.error('Error fetching food items:', error);
+    } finally {
+        setLoading(false);
     }
-  ];
+  }
 
   useEffect(() => {
-    // Simulate API call
-    setTimeout(() => {
-      setFoodItems(sampleFoodItems);
-      setLoading(false);
-    }, 1000);
+      fetchFoodItems()
   }, []);
 
   const addToCart = (item: FoodItem) => {
-    const existingItem = cart.find(cartItem => cartItem.id === item.id);
+    const existingItem = cart.find(cartItem => cartItem.id === item._id);
     
     if (existingItem) {
       setCart(cart.map(cartItem =>
-        cartItem.id === item.id
+        cartItem.id === item._id
           ? { ...cartItem, quantity: cartItem.quantity + 1 }
           : cartItem
       ));
     } else {
       setCart([...cart, {
-        id: item.id,
+        id: item._id,
         name: item.name,
         price: item.price,
         quantity: 1,
@@ -262,7 +174,7 @@ export default function FoodPage() {
                 <TabsContent key={category} value={category} className="mt-6">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {(category === 'all' ? foodItems : getCategoryItems(category)).map((item) => (
-                      <Card key={item.id} className="bg-gray-900 border-gray-800 overflow-hidden hover:scale-105 transition-transform duration-300">
+                      <Card key={item._id} className="bg-gray-900 border-gray-800 overflow-hidden hover:scale-105 transition-transform duration-300">
                         <div className="flex">
                           <div className="w-32 h-32 flex-shrink-0">
                             <img
@@ -278,11 +190,11 @@ export default function FoodPage() {
                                 <p className="text-gray-400 text-sm line-clamp-2">{item.description}</p>
                               </div>
                               <button
-                                onClick={() => toggleFavorite(item.id)}
+                                onClick={() => toggleFavorite(item._id)}
                                 className="text-gray-400 hover:text-red-500 transition-colors"
                               >
                                 <Heart 
-                                  className={`h-5 w-5 ${favorites.includes(item.id) ? 'fill-current text-red-500' : ''}`} 
+                                  className={`h-5 w-5 ${favorites.includes(item._id) ? 'fill-current text-red-500' : ''}`}
                                 />
                               </button>
                             </div>

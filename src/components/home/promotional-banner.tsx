@@ -114,9 +114,10 @@ export function PromotionalBanner() {
                     </Button>
                   </div>
                   
-                  <p className="text-sm text-gray-400 mt-4">
+                  <div><p className="text-sm text-gray-400 mt-4">
                     Valid until {new Date(promotion.validUntil).toLocaleDateString()}
                   </p>
+                      </div>
                 </div>
                 
                 <div className="hidden lg:block">
